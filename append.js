@@ -18,11 +18,50 @@ const execFile = util.promisify(require("child_process").execFile);
 //   //fs.appendFileSync(hello, 'utf8');
 // }
 let files;
+const coded =
+  'const utils = {};\nutils.getInitials = str => {\nlet strArr = str.split(" ");\nlet initialsArr = [];\nfor (let i = 0; i < strArr.length; i++) {\ninitialsArr.push(strArr[i]);\n}\nreturn initialsArr.join("").toUpperCase();\n};';
+
+const tested =
+  '//hello\n"use strict";\n// Assertions\nconst { exec } = require("child_process");\nconst chai = require("chai");\nconst expect = chai.expect;\nconst chaiThings = require("chai-things");\n\ndescribe("`getInitials` utility method", () => {\nit("takes a string and returns a string", () => {\nconst initials = utils.getInitials("Corey Greenwald");\nexpect(initials).to.be.a("string");\n});\nit("returns the first letter of each word in the input string, capitalized", () => {\nconst initialsGHA = utils.getInitials("Grace Hopper Academy");\nexpect(initialsGHA).to.equal("GHA");\nconst initialsHATEOAS = utils.getInitials(\n"hypermedia as the engine of application state"\n);\nexpect(initialsHATEOAS).to.equal("HATEOAS");\n});\n});';
 const coding = fs.readFileSync("code.js");
-fs.readFile("test.js", "utf8", async function(err, data) {
-  if (err) throw err;
-  fs.appendFileSync("code-test.js", coding, "utf8");
-  fs.appendFileSync("code-test.js", data, "utf8");
+// fs.readFile("test.js", "utf8", async function(err, data) {
+//   if (err) throw err;
+//   fs.appendFileSync("code-test.js", coded, "utf8");
+//   fs.appendFileSync("code-test.js", data, "utf8");
+
+//   async function getVersion() {
+//     try {
+//       const { stdout } = await execFile("mocha", ["code-test.js"]);
+
+//       files = stdout;
+
+//       return files;
+//     } catch (err) {
+//       // const { stdout } = await execFile("mocha", ["code-test.js"]);
+//       files = err.stdout;
+
+//       console.log(err.stdout);
+//       return files;
+//     }
+//   }
+//   let getfiles = await getVersion();
+//   console.log("GETTHISFILE", getfiles);
+//   // execFile("mocha", ["code-test.js"], (err, stdout, stderr) => {
+//   //   if (err) {
+//   //     console.log(err);
+//   //     //throw err;
+//   //   }
+//   //   //fileToSend = stdout;
+//   //   //let files = stdout.toString();
+//   //   console.log(typeof stdout);
+//   // });
+//   //console.log("this is to send", fileToSend);
+// });
+
+async function appendFiles(coded, tested) {
+  coded = coded + "\n";
+  await fs.appendFileSync("code-test.js", coded, "utf8");
+  await fs.appendFileSync("code-test.js", tested, "utf8");
 
   async function getVersion() {
     try {
@@ -32,30 +71,15 @@ fs.readFile("test.js", "utf8", async function(err, data) {
 
       return files;
     } catch (err) {
-      // const { stdout } = await execFile("mocha", ["code-test.js"]);
       files = err.stdout;
 
-      console.log(err.stdout);
+      //console.log(err.stdout);
       return files;
     }
   }
   let getfiles = await getVersion();
-  console.log("GETTHISFILE", getfiles);
-  // execFile("mocha", ["code-test.js"], (err, stdout, stderr) => {
-  //   if (err) {
-  //     console.log(err);
-  //     //throw err;
-  //   }
-  //   //fileToSend = stdout;
-  //   //let files = stdout.toString();
-  //   console.log(typeof stdout);
-  // });
-  //console.log("this is to send", fileToSend);
-});
 
-// const child = execFile("mocha", ["code-test.js"], (err, stdout, stderr) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log(stdout);
-// });
+  console.log("GETTHISFILE", getfiles);
+}
+
+appendFiles(coded, tested);
